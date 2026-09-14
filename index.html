@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Данные для СоюзМед</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F2F1E9; --paper-raised:#FBFAF5; --ink:#181B16; --ink-soft:#585B4E;
+  --ink-faint:#8C8F7E; --line:#D9D5C4; --line-strong:#B9B49E;
+  --accent:#28448C; --accent-ink:#F3F5FC; --accent-soft:#DEE5F4; --accent-soft-line:#B9C6E6;
+  --ok:#3C6B49; --ok-soft:#DCE9DE; --ok-line:#A9C7AE;
+  --warn:#9C3A1D; --warn-soft:#F2DED2; --warn-line:#D8A98D;
+  --radius:3px;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  --cond:"IBM Plex Sans Condensed",var(--sans);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#14171A; --paper-raised:#1B1F22; --ink:#EDEAE0; --ink-soft:#ABA99C;
+    --ink-faint:#787669; --line:#2B2F2E; --line-strong:#3C403D;
+    --accent:#7C9AE0; --accent-ink:#101623; --accent-soft:#212B3F; --accent-soft-line:#37456A;
+    --ok:#7FB58C; --ok-soft:#1E2C21; --ok-line:#3A5240;
+    --warn:#E08A63; --warn-soft:#332019; --warn-line:#5C3B28;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14171A; --paper-raised:#1B1F22; --ink:#EDEAE0; --ink-soft:#ABA99C;
+  --ink-faint:#787669; --line:#2B2F2E; --line-strong:#3C403D;
+  --accent:#7C9AE0; --accent-ink:#101623; --accent-soft:#212B3F; --accent-soft-line:#37456A;
+  --ok:#7FB58C; --ok-soft:#1E2C21; --ok-line:#3A5240;
+  --warn:#E08A63; --warn-soft:#332019; --warn-line:#5C3B28;
+}
+*{box-sizing:border-box}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+html{background:var(--paper)}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans);
+  line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{ max-width:760px; margin-inline:auto; padding-inline:20px; padding-block:28px 80px; }
+.eyebrow{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+h1{
+  font-family:var(--cond); font-weight:700; font-size:clamp(1.5rem,1.15rem + 1.6vw,2.15rem);
+  letter-spacing:-.01em; text-wrap:balance; margin:.3em 0 .35em;
+}
+.intro{ color:var(--ink-soft); max-width:62ch; font-size:.97rem; margin:0 0 8px }
+.notice{ border:1px solid var(--warn-line); background:var(--warn-soft); color:var(--warn);
+  border-radius:var(--radius); padding:12px 14px; font-size:.87rem; margin:18px 0 0 }
+
+.statusbar{
+  position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin:0 -20px 26px; padding:10px 20px; background:var(--paper); border-bottom:1px solid var(--line-strong);
+  flex-wrap:wrap;
+}
+.statusbar .status{ font-family:var(--mono); font-size:.78rem; color:var(--ink-soft) }
+.statusbar .status.ok{ color:var(--ok) }
+.statusbar .status.err{ color:var(--warn) }
+.btn{
+  font-family:var(--sans); font-weight:600; font-size:.86rem; letter-spacing:.01em;
+  padding:9px 16px; border-radius:var(--radius); border:1px solid var(--line-strong);
+  background:var(--paper-raised); color:var(--ink); cursor:pointer;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent) }
+.btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent) }
+.btn-primary:hover{ filter:brightness(1.07); color:var(--accent-ink) }
+.btn-primary:disabled{ opacity:.55; cursor:default; filter:none }
+
+section.block{ margin-top:38px }
+section.block .sec-title{
+  display:flex; align-items:baseline; gap:10px; padding-bottom:8px; margin-bottom:6px;
+  border-bottom:1px solid var(--line-strong);
+  font-family:var(--cond); font-weight:600; font-size:1.08rem;
+}
+section.block .sec-title .num{ font-family:var(--mono); font-weight:500; color:var(--accent); font-size:.85rem }
+section.block .hint{ color:var(--ink-soft); font-size:.9rem; max-width:64ch; margin:0 0 10px }
+
+.field{ position:relative }
+.field textarea{
+  width:100%; min-height:110px; font-family:var(--sans); font-size:.94rem; color:var(--ink);
+  background:var(--paper-raised); border:1px solid var(--line-strong); border-radius:var(--radius);
+  padding:12px 44px 12px 12px; resize:vertical; line-height:1.5;
+}
+.field textarea::placeholder{ color:var(--ink-faint) }
+.field textarea:focus-visible{ outline:none; border-color:var(--accent); background:var(--accent-soft) }
+.mic{
+  position:absolute; top:9px; right:9px; width:28px; height:28px; border-radius:50%;
+  border:1px solid var(--line-strong); background:var(--paper); color:var(--ink-soft);
+  cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;
+}
+.mic:hover{ border-color:var(--accent); color:var(--accent) }
+.mic:focus-visible{ outline:2px solid var(--accent); outline-offset:2px }
+.mic.rec{ background:var(--warn); border-color:var(--warn); color:var(--accent-ink); animation:pulse 1.4s ease-in-out infinite }
+@keyframes pulse{ 0%,100%{ opacity:1 } 50%{ opacity:.55 } }
+.mic svg{ width:14px; height:14px }
+.mic[hidden]{ display:none }
+
+.bottom-save{ display:flex; justify-content:flex-end; margin-top:44px; padding-top:20px; border-top:1px solid var(--line) }
+footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:var(--ink-faint); line-height:1.6 }
+
+@media (max-width:480px){
+  .wrap{ padding-inline:16px }
+  .statusbar{ margin-inline:-16px; padding-inline:16px }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="statusbar">
+    <span class="status" id="status">Загрузка…</span>
+    <button class="btn btn-primary" id="saveBtn" type="button">Сохранить</button>
+  </div>
+
+  <span class="eyebrow">СоюзМед · данные для расчёта</span>
+  <h1>Что нужно собрать</h1>
+  <p class="intro">Заполняй как удобно — можно вернуться и дописать позже, ссылка та же, последняя
+  сохранённая версия видна при следующем заходе. В текстовые поля можно диктовать голосом — либо
+  штатным микрофоном клавиатуры телефона, либо кнопкой рядом с полем.</p>
+  <p class="notice">Не указывай здесь ФИО и телефоны пациентов — только организационная информация
+  (врачи, расписание, формулировки жалоб, скрипты).</p>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">01</span> Врачи, специальности, длительность приёма</h2>
+    <p class="hint">Один врач — одна строка: ФИО, специальность(и), стандартная длительность приёма.
+    Если у разных врачей одной специальности приём разной длины — укажи отдельно.</p>
+    <div class="field">
+      <textarea id="doctors" placeholder="Иванова Мария Петровна — терапевт — 20 мин&#10;Петров Олег Иванович — окулист, ортопед (совмещает) — окулист 15 мин, ортопед 30 мин"></textarea>
+      <button class="mic" id="mic-doctors" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">02</span> Расписание и филиалы</h2>
+    <p class="hint">По каждому врачу: день недели → филиал → время приёма — так сразу видно, работает
+    он в одном филиале или в двух. Отдельно — насколько сильно и часто расписание менялось за
+    последний год.</p>
+    <div class="field">
+      <textarea id="schedule" placeholder="Иванова М.П.: пн/ср/пт — филиал А, 09:00–15:00; вт/чт — филиал Б, 12:00–18:00&#10;За год: пришли два новых врача, у одного в марте сменился филиал"></textarea>
+      <button class="mic" id="mic-schedule" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">03</span> Жалобы пациентов → специальность</h2>
+    <p class="hint">Словами самого пациента, не медицинскими терминами — «ухо стреляет», а не «отит».
+    Отдельно — тревожные симптомы, при которых сразу нужен человек, а не запись.</p>
+    <div class="field">
+      <textarea id="complaints" placeholder="Терапевт: «температура третий день», «горло болит»&#10;Окулист: «глаз покраснел», «плохо вижу вблизи»&#10;Тревожно, сразу к человеку: «сильная боль в груди», «ребёнок задыхается»"></textarea>
+      <button class="mic" id="mic-complaints" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">04</span> Когда звонок точно передаётся сотруднику</h2>
+    <p class="hint">Ситуации, где робот не должен даже пытаться разобраться сам — сразу к человеку.</p>
+    <div class="field">
+      <textarea id="escalation" placeholder="жалоба на лечение или врача, вопрос оплаты и возврата денег, тревожные симптомы (см. выше), пациент уже злится"></textarea>
+      <button class="mic" id="mic-escalation" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">05</span> Скрипты и работа менеджеров</h2>
+    <p class="hint">Как дословно здороваются и прощаются, как выясняют, что нужно пациенту, как
+    фиксируют звонок (в какую систему, что именно записывают).</p>
+    <div class="field">
+      <textarea id="scripts" placeholder="Приветствие: «Клиника СоюзМед, здравствуйте!»&#10;Прощание: «Ждём вас, всего доброго»&#10;Потребность выясняют вопросом: «На какого врача хотите записаться?»"></textarea>
+      <button class="mic" id="mic-scripts" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">06</span> Звонки для обучения ИИ</h2>
+    <p class="hint">Ссылка на архив или CRM-выгрузку с записями (штук 300–500, чем больше — тем
+    лучше), и за какой период. Сами аудиофайлы сюда не грузим — только ссылка на облако/CRM.</p>
+    <div class="field">
+      <textarea id="calls" placeholder="https://disk.yandex.ru/... (записи за март–август 2026)"></textarea>
+      <button class="mic" id="mic-calls" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec-title"><span class="num">07</span> ПО менеджеров</h2>
+    <p class="hint">Название системы (1С:Медицина, Инфоклиника, Renovatio, Medesk — что угодно) или
+    просто «таблица / Excel / память». Можно ли из неё сделать выгрузку.</p>
+    <div class="field">
+      <textarea id="software" placeholder="Medesk, выгрузку делает администратор по запросу"></textarea>
+      <button class="mic" id="mic-software" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+    </div>
+  </section>
+
+  <div class="bottom-save">
+    <button class="btn btn-primary" id="saveBtn2" type="button">Сохранить</button>
+  </div>
+
+  <footer class="note">Данные хранятся в закрытой на запись по постороннему пути базе (Firestore) —
+  ссылка одна для чтения и записи, вход не нужен.</footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+// ЗАПОЛНИТЬ конфигом из Firebase Console → Project settings → General → Your apps → Web app.
+const firebaseConfig = {
+  apiKey: "REPLACE_ME",
+  authDomain: "REPLACE_ME.firebaseapp.com",
+  projectId: "REPLACE_ME",
+  storageBucket: "REPLACE_ME.appspot.com",
+  messagingSenderId: "REPLACE_ME",
+  appId: "REPLACE_ME"
+};
+
+const FIELDS = ["doctors","schedule","complaints","escalation","scripts","calls","software"];
+const statusEl = document.getElementById("status");
+const saveBtn = document.getElementById("saveBtn");
+const saveBtn2 = document.getElementById("saveBtn2");
+let dirty = false;
+let db = null;
+let docRef = null;
+
+function setStatus(text, cls){
+  statusEl.textContent = text;
+  statusEl.className = "status" + (cls ? " " + cls : "");
+}
+
+function markDirty(){
+  dirty = true;
+  setStatus("Есть несохранённые правки", "err");
+}
+
+function formatTimestamp(ts){
+  try { return ts.toDate().toLocaleString("ru-RU"); } catch(e){ return ""; }
+}
+
+async function init(){
+  if (firebaseConfig.apiKey === "REPLACE_ME") {
+    setStatus("Хранилище ещё не подключено — сохранение пока не работает", "err");
+    FIELDS.forEach(setupMic);
+    return;
+  }
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  docRef = db.collection("clinic_intake").doc("main");
+  FIELDS.forEach(setupMic);
+  FIELDS.forEach(id => document.getElementById(id).addEventListener("input", markDirty));
+  saveBtn.addEventListener("click", save);
+  saveBtn2.addEventListener("click", save);
+  window.addEventListener("beforeunload", e => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+  try {
+    const snap = await docRef.get();
+    if (snap.exists) {
+      const data = snap.data();
+      FIELDS.forEach(id => { if (typeof data[id] === "string") document.getElementById(id).value = data[id]; });
+      setStatus(data.updatedAt ? "Сохранено: " + formatTimestamp(data.updatedAt) : "Загружено", "ok");
+    } else {
+      setStatus("Пока пусто — можно заполнять", "ok");
+    }
+  } catch(e) {
+    setStatus("Не удалось загрузить сохранённое: " + e.message, "err");
+  }
+}
+
+async function save(){
+  if (!docRef) return;
+  const payload = {};
+  FIELDS.forEach(id => payload[id] = document.getElementById(id).value);
+  payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  saveBtn.disabled = true; saveBtn2.disabled = true;
+  setStatus("Сохраняю…");
+  try {
+    await docRef.set(payload, { merge: true });
+    dirty = false;
+    setStatus("Сохранено: " + new Date().toLocaleString("ru-RU"), "ok");
+  } catch(e) {
+    setStatus("Не сохранилось: " + e.message, "err");
+  } finally {
+    saveBtn.disabled = false; saveBtn2.disabled = false;
+  }
+}
+
+function micIcon(){
+  return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z"/><path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V20H9a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-2v-2.08A7 7 0 0 0 19 11z"/></svg>';
+}
+
+// ponytail: голосовой ввод — только прогрессивное улучшение для десктопа;
+// на телефоне то же самое уже делает системная клавиатура без единой строчки кода.
+function setupMic(id){
+  const btn = document.getElementById("mic-" + id);
+  const ta = document.getElementById(id);
+  btn.innerHTML = micIcon();
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { btn.hidden = true; return; }
+  const rec = new SR();
+  rec.lang = "ru-RU";
+  rec.interimResults = false;
+  rec.continuous = true;
+  let listening = false;
+  btn.addEventListener("click", () => {
+    if (listening) { rec.stop(); return; }
+    try { rec.start(); listening = true; btn.classList.add("rec"); } catch(e){}
+  });
+  rec.onresult = (e) => {
+    let text = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) text += e.results[i][0].transcript;
+    text = text.trim();
+    if (text) {
+      ta.value += (ta.value && !ta.value.endsWith("\n") ? "\n" : "") + text;
+      markDirty();
+    }
+  };
+  rec.onend = () => { listening = false; btn.classList.remove("rec"); };
+  rec.onerror = () => { listening = false; btn.classList.remove("rec"); };
+}
+
+init();
+</script>
+</body>
+</html>
