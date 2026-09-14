@@ -85,7 +85,7 @@ section.block .hint{ color:var(--ink-soft); font-size:.9rem; max-width:64ch; mar
 .field textarea{
   width:100%; min-height:110px; font-family:var(--sans); font-size:.94rem; color:var(--ink);
   background:var(--paper-raised); border:1px solid var(--line-strong); border-radius:var(--radius);
-  padding:12px 44px 12px 12px; resize:vertical; line-height:1.5;
+  padding:12px 80px 12px 12px; resize:vertical; line-height:1.5;
 }
 .field textarea::placeholder{ color:var(--ink-faint) }
 .field textarea:focus-visible{ outline:none; border-color:var(--accent); background:var(--accent-soft) }
@@ -100,6 +100,25 @@ section.block .hint{ color:var(--ink-soft); font-size:.9rem; max-width:64ch; mar
 @keyframes pulse{ 0%,100%{ opacity:1 } 50%{ opacity:.55 } }
 .mic svg{ width:14px; height:14px }
 .mic[hidden]{ display:none }
+.clip{
+  position:absolute; top:9px; right:45px; width:28px; height:28px; border-radius:50%;
+  border:1px solid var(--line-strong); background:var(--paper); color:var(--ink-soft);
+  cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;
+}
+.clip:hover{ border-color:var(--accent); color:var(--accent) }
+.clip:focus-visible{ outline:2px solid var(--accent); outline-offset:2px }
+.clip.busy{ opacity:.5; pointer-events:none }
+.clip:disabled{ opacity:.4; cursor:default }
+.clip svg{ width:14px; height:14px }
+.attachments{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px }
+.chip{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:.74rem;
+  padding:4px 6px 4px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent);
+  border:1px solid var(--accent-soft-line); max-width:100%;
+}
+.chip a{ color:inherit; text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:220px }
+.chip a:hover{ text-decoration:underline }
+.chip button{ border:none; background:none; color:inherit; cursor:pointer; font-size:1rem; line-height:1; padding:0 2px }
 
 .bottom-save{ display:flex; justify-content:flex-end; margin-top:44px; padding-top:20px; border-top:1px solid var(--line) }
 footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:var(--ink-faint); line-height:1.6 }
@@ -122,17 +141,21 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
   <p class="intro">Заполняй как удобно — можно вернуться и дописать позже, ссылка та же, последняя
   сохранённая версия видна при следующем заходе. В текстовые поля можно диктовать голосом — либо
   штатным микрофоном клавиатуры телефона, либо кнопкой рядом с полем.</p>
-  <p class="notice">Не указывай здесь ФИО и телефоны пациентов — только организационная информация
-  (врачи, расписание, формулировки жалоб, скрипты).</p>
+  <p class="notice">Не указывай здесь ФИО и телефоны пациентов и не прикрепляй файлы с данными
+  пациентов — только организационная информация (расписание, формулировки жалоб, скрипты).
+  Вложения тоже открыты по ссылке, как и весь документ.</p>
 
   <section class="block">
-    <h2 class="sec-title"><span class="num">01</span> Врачи, специальности, длительность приёма</h2>
-    <p class="hint">Один врач — одна строка: ФИО, специальность(и), стандартная длительность приёма.
-    Если у разных врачей одной специальности приём разной длины — укажи отдельно.</p>
+    <h2 class="sec-title"><span class="num">01</span> Специальности и длительность приёма</h2>
+    <p class="hint">Одна специальность — одна строка: сколько длится приём. Если внутри специальности
+    длительность отличается (например, первичный и повторный приём) — укажи отдельно.</p>
     <div class="field">
-      <textarea id="doctors" placeholder="Иванова Мария Петровна — терапевт — 20 мин&#10;Петров Олег Иванович — окулист, ортопед (совмещает) — окулист 15 мин, ортопед 30 мин"></textarea>
-      <button class="mic" id="mic-doctors" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
+      <textarea id="specialties" placeholder="Терапевт — 20 мин&#10;Окулист — 15 мин&#10;Ортопед — 30 мин&#10;УЗИ — 30 мин"></textarea>
+      <button class="clip" id="clip-specialties" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-specialties" hidden multiple>
+      <button class="mic" id="mic-specialties" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-specialties"></div>
   </section>
 
   <section class="block">
@@ -142,8 +165,11 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
     последний год.</p>
     <div class="field">
       <textarea id="schedule" placeholder="Иванова М.П.: пн/ср/пт — филиал А, 09:00–15:00; вт/чт — филиал Б, 12:00–18:00&#10;За год: пришли два новых врача, у одного в марте сменился филиал"></textarea>
+      <button class="clip" id="clip-schedule" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-schedule" hidden multiple>
       <button class="mic" id="mic-schedule" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-schedule"></div>
   </section>
 
   <section class="block">
@@ -152,8 +178,11 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
     Отдельно — тревожные симптомы, при которых сразу нужен человек, а не запись.</p>
     <div class="field">
       <textarea id="complaints" placeholder="Терапевт: «температура третий день», «горло болит»&#10;Окулист: «глаз покраснел», «плохо вижу вблизи»&#10;Тревожно, сразу к человеку: «сильная боль в груди», «ребёнок задыхается»"></textarea>
+      <button class="clip" id="clip-complaints" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-complaints" hidden multiple>
       <button class="mic" id="mic-complaints" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-complaints"></div>
   </section>
 
   <section class="block">
@@ -161,8 +190,11 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
     <p class="hint">Ситуации, где робот не должен даже пытаться разобраться сам — сразу к человеку.</p>
     <div class="field">
       <textarea id="escalation" placeholder="жалоба на лечение или врача, вопрос оплаты и возврата денег, тревожные симптомы (см. выше), пациент уже злится"></textarea>
+      <button class="clip" id="clip-escalation" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-escalation" hidden multiple>
       <button class="mic" id="mic-escalation" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-escalation"></div>
   </section>
 
   <section class="block">
@@ -171,8 +203,11 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
     фиксируют звонок (в какую систему, что именно записывают).</p>
     <div class="field">
       <textarea id="scripts" placeholder="Приветствие: «Клиника СоюзМед, здравствуйте!»&#10;Прощание: «Ждём вас, всего доброго»&#10;Потребность выясняют вопросом: «На какого врача хотите записаться?»"></textarea>
+      <button class="clip" id="clip-scripts" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-scripts" hidden multiple>
       <button class="mic" id="mic-scripts" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-scripts"></div>
   </section>
 
   <section class="block">
@@ -181,8 +216,11 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
     лучше), и за какой период. Сами аудиофайлы сюда не грузим — только ссылка на облако/CRM.</p>
     <div class="field">
       <textarea id="calls" placeholder="https://disk.yandex.ru/... (записи за март–август 2026)"></textarea>
+      <button class="clip" id="clip-calls" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-calls" hidden multiple>
       <button class="mic" id="mic-calls" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-calls"></div>
   </section>
 
   <section class="block">
@@ -191,8 +229,11 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
     просто «таблица / Excel / память». Можно ли из неё сделать выгрузку.</p>
     <div class="field">
       <textarea id="software" placeholder="Medesk, выгрузку делает администратор по запросу"></textarea>
+      <button class="clip" id="clip-software" type="button" title="Прикрепить файл" aria-label="Прикрепить файл"></button>
+      <input type="file" id="file-software" hidden multiple>
       <button class="mic" id="mic-software" type="button" title="Надиктовать" aria-label="Надиктовать"></button>
     </div>
+    <div class="attachments" id="attach-software"></div>
   </section>
 
   <div class="bottom-save">
@@ -205,6 +246,7 @@ footer.note{ margin-top:36px; font-family:var(--mono); font-size:.74rem; color:v
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
 <script>
 // ЗАПОЛНИТЬ конфигом из Firebase Console → Project settings → General → Your apps → Web app.
 const firebaseConfig = {
@@ -216,13 +258,15 @@ const firebaseConfig = {
   appId: "REPLACE_ME"
 };
 
-const FIELDS = ["doctors","schedule","complaints","escalation","scripts","calls","software"];
+const FIELDS = ["specialties","schedule","complaints","escalation","scripts","calls","software"];
+const MAX_FILE_BYTES = 20 * 1024 * 1024; // держим в паре с правилами Storage
 const statusEl = document.getElementById("status");
 const saveBtn = document.getElementById("saveBtn");
 const saveBtn2 = document.getElementById("saveBtn2");
 let dirty = false;
 let db = null;
 let docRef = null;
+let storage = null;
 
 function setStatus(text, cls){
   statusEl.textContent = text;
@@ -242,12 +286,19 @@ async function init(){
   if (firebaseConfig.apiKey === "REPLACE_ME") {
     setStatus("Хранилище ещё не подключено — сохранение пока не работает", "err");
     FIELDS.forEach(setupMic);
+    FIELDS.forEach(id => {
+      const clipBtn = document.getElementById("clip-" + id);
+      clipBtn.innerHTML = clipIcon();
+      clipBtn.disabled = true;
+    });
     return;
   }
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
+  storage = firebase.storage();
   docRef = db.collection("clinic_intake").doc("main");
   FIELDS.forEach(setupMic);
+  FIELDS.forEach(setupAttachments);
   FIELDS.forEach(id => document.getElementById(id).addEventListener("input", markDirty));
   saveBtn.addEventListener("click", save);
   saveBtn2.addEventListener("click", save);
@@ -256,7 +307,10 @@ async function init(){
     const snap = await docRef.get();
     if (snap.exists) {
       const data = snap.data();
-      FIELDS.forEach(id => { if (typeof data[id] === "string") document.getElementById(id).value = data[id]; });
+      FIELDS.forEach(id => {
+        if (typeof data[id] === "string") document.getElementById(id).value = data[id];
+        renderAttachments(id, data[id + "_files"] || []);
+      });
       setStatus(data.updatedAt ? "Сохранено: " + formatTimestamp(data.updatedAt) : "Загружено", "ok");
     } else {
       setStatus("Пока пусто — можно заполнять", "ok");
@@ -286,6 +340,73 @@ async function save(){
 
 function micIcon(){
   return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z"/><path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V20H9a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-2v-2.08A7 7 0 0 0 19 11z"/></svg>';
+}
+
+function clipIcon(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 7v9a4 4 0 0 1-8 0V6a2.5 2.5 0 0 1 5 0v9a1 1 0 0 1-2 0V7"/></svg>';
+}
+
+// Вложения: файл целиком идёт в Firebase Storage, в самом документе (Firestore)
+// хранится только { name, url, path, size } — так документ не упирается в лимит размера.
+function renderAttachments(id, files){
+  const box = document.getElementById("attach-" + id);
+  box.innerHTML = "";
+  files.forEach(f => {
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    const a = document.createElement("a");
+    a.href = f.url; a.textContent = f.name; a.target = "_blank"; a.rel = "noopener";
+    const rm = document.createElement("button");
+    rm.type = "button"; rm.textContent = "✕"; rm.title = "Убрать";
+    rm.addEventListener("click", () => removeAttachment(id, f));
+    chip.append(a, rm);
+    box.appendChild(chip);
+  });
+}
+
+async function removeAttachment(id, file){
+  try {
+    await docRef.update({ [id + "_files"]: firebase.firestore.FieldValue.arrayRemove(file) });
+    if (file.path) storage.ref(file.path).delete().catch(() => {});
+    const snap = await docRef.get();
+    renderAttachments(id, (snap.data() || {})[id + "_files"] || []);
+  } catch(e) {
+    setStatus("Не удалось убрать файл: " + e.message, "err");
+  }
+}
+
+function setupAttachments(id){
+  const clipBtn = document.getElementById("clip-" + id);
+  const input = document.getElementById("file-" + id);
+  clipBtn.innerHTML = clipIcon();
+  clipBtn.addEventListener("click", () => input.click());
+  input.addEventListener("change", async () => {
+    const files = Array.from(input.files || []);
+    input.value = "";
+    for (const file of files) {
+      if (file.size > MAX_FILE_BYTES) {
+        setStatus("«" + file.name + "» больше 20 МБ — не загрузил", "err");
+        continue;
+      }
+      clipBtn.classList.add("busy");
+      setStatus("Загружаю «" + file.name + "»…");
+      try {
+        const path = "attachments/" + id + "/" + Date.now() + "_" + file.name;
+        const ref = storage.ref(path);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        const record = { name: file.name, url, path, size: file.size };
+        await docRef.set({ [id + "_files"]: firebase.firestore.FieldValue.arrayUnion(record) }, { merge: true });
+        const snap = await docRef.get();
+        renderAttachments(id, (snap.data() || {})[id + "_files"] || []);
+        setStatus("Файл «" + file.name + "» прикреплён", "ok");
+      } catch(e) {
+        setStatus("Не удалось загрузить «" + file.name + "»: " + e.message, "err");
+      } finally {
+        clipBtn.classList.remove("busy");
+      }
+    }
+  });
 }
 
 // ponytail: голосовой ввод — только прогрессивное улучшение для десктопа;
